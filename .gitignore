@@ -28,3 +28,7 @@ supabase/migrations/*.sql
 
 # Optional: local data
 data/
+
+# Temp/debug files
+*.txt
+supabase_check.txt
