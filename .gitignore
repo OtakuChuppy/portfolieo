@@ -32,3 +32,4 @@ data/
 # Temp/debug files
 *.txt
 supabase_check.txt
+.vercel

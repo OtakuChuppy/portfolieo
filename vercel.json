@@ -21,7 +21,7 @@
     { "src": "/checkout", "dest": "checkout.html" }
   ],
   "env": {
-    "VITE_SUPABASE_URL": "@supabase_url",
-    "VITE_SUPABASE_ANON_KEY": "@supabase_anon_key"
+    "VITE_SUPABASE_URL": "https://wgktassmrrereaciixdqvm.supabase.co",
+    "VITE_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indna3Rhc3NtcnJlYWNpaXhkcXZtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEzOTI5NDMsImV4cCI6MjEwNjk2ODk0M30.1cRx9AkqiSXFv9P_IwGJUhqnqkQGUNXkmGMmwG9vFIY"
   }
 }
