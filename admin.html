@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Enquiries — Admin</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9C%A6%3C/text%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css">
+    <style>
+         :root {
+            --bg: #f5f6f2;
+            --surface: #fff;
+            --text: #20231d;
+            --muted: #777c71;
+            --border: #e8eae3;
+            --accent: #c6f36b;
+            --dark: #151713;
+        }
+        
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            margin: 0;
+            color: var(--text);
+            background: var(--bg);
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+        
+        button,
+        input,
+        select {
+            font: inherit;
+        }
+        
+        button {
+            cursor: pointer;
+        }
+        
+        .admin-layout {
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 240px minmax(0, 1fr);
+        }
+        
+        .admin-sidebar {
+            display: flex;
+            flex-direction: column;
+            padding: 25px 17px;
+            color: #f4f4ec;
+            background: var(--dark);
+        }
+        
+        .admin-brand {
+            padding: 4px 12px 32px;
+            color: #f4f4ec;
+            font-size: 19px;
+            font-weight: 800;
+            letter-spacing: -0.06em;
+            text-decoration: none;
+        }
+        
+        .admin-brand span {
+            color: var(--accent);
+        }
+        
+        .sidebar-label {
+            padding: 0 12px;
+            margin-bottom: 10px;
+            color: #84887d;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.13em;
+            text-transform: uppercase;
+        }
+        
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 12px;
+            border-radius: 8px;
+            color: #b6b9ae;
+            font-size: 14px;
+            text-decoration: none;
+        }
+        
+        .sidebar-link.active {
+            color: var(--dark);
+            background: var(--accent);
+            font-weight: 700;
+        }
+        
+        .sidebar-link .nav-icon {
+            width: 20px;
+            text-align: center;
+        }
+        
+        .sidebar-bottom {
+            margin-top: auto;
+            padding: 18px 12px 0;
+            border-top: 1px solid #30332d;
+            color: #92968b;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+        
+        .admin-main {
+            min-width: 0;
+        }
+        
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            min-height: 76px;
+            padding: 16px clamp(20px, 4vw, 48px);
+            border-bottom: 1px solid var(--border);
+            background: var(--surface);
+        }
+
+        .cloud-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 8px;
+            padding: 5px 12px;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            background: #f0f1ec;
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .cloud-badge.live {
+            border-color: #b7e26a;
+            background: #eef8da;
+            color: #4a6417;
+        }
+        
+        .topbar small {
+            display: block;
+            margin-bottom: 4px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+        
+        .topbar strong {
+            font-size: 14px;
+        }
+        
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            font-weight: 650;
+        }
+        
+        .profile-avatar {
+            display: grid;
+            width: 34px;
+            height: 34px;
+            place-items: center;
+            border-radius: 50%;
+            background: var(--accent);
+            font-size: 12px;
+            font-weight: 800;
+        }
+        
+        .page-content {
+            width: min(1360px, 100%);
+            margin: 0 auto;
+            padding: 38px clamp(20px, 4vw, 48px) 55px;
+        }
+        
+        .page-heading {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .page-heading h1 {
+            margin: 0;
+            font-size: clamp(26px, 3vw, 34px);
+            letter-spacing: -0.055em;
+        }
+        
+        .page-heading p {
+            margin: 7px 0 0;
+            color: var(--muted);
+            font-size: 14px;
+        }
+        
+        .button-dark {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 42px;
+            padding: 0 15px;
+            border: 0;
+            border-radius: 8px;
+            color: #fff;
+            background: var(--dark);
+            font-size: 13px;
+            font-weight: 650;
+        }
+        
+        .button-dark:hover {
+            background: #30342b;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 14px;
+            margin-bottom: 25px;
+        }
+        
+        .stat-card {
+            min-width: 0;
+            padding: 18px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: var(--surface);
+        }
+        
+        .stat-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+        
+        .stat-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: #aeb2a7;
+        }
+        
+        .stat-dot.total {
+            background: #292d24;
+        }
+        
+        .stat-dot.new {
+            background: #4487ee;
+        }
+        
+        .stat-dot.booked {
+            background: #43a979;
+        }
+        
+        .stat-dot.on-hold {
+            background: #e3a533;
+        }
+        
+        .stat-dot.canceled {
+            background: #df6868;
+        }
+        
+        .stat-number {
+            display: block;
+            margin-top: 12px;
+            font-size: 30px;
+            font-weight: 750;
+            letter-spacing: -0.06em;
+        }
+        
+        .inquiries-panel {
+            overflow: hidden;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: var(--surface);
+        }
+        
+        .panel-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            padding: 20px 21px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .panel-heading h2 {
+            margin: 0;
+            font-size: 16px;
+            letter-spacing: -0.025em;
+        }
+        
+        .panel-heading p {
+            margin: 5px 0 0;
+            color: var(--muted);
+            font-size: 12px;
+        }
+        
+        .search-box {
+            width: min(270px, 100%);
+            min-height: 39px;
+            padding: 0 12px;
+            border: 1px solid var(--border);
+            border-radius: 7px;
+            outline: none;
+            background: #fff;
+            font-size: 13px;
+        }
+        
+        .search-box:focus {
+            border-color: #9ebc61;
+        }
+        
+        .filter-row {
+            display: flex;
+            gap: 7px;
+            overflow-x: auto;
+            padding: 13px 20px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .filter-button {
+            flex: 0 0 auto;
+            padding: 8px 11px;
+            border: 1px solid transparent;
+            border-radius: 7px;
+            color: var(--muted);
+            background: transparent;
+            font-size: 12px;
+        }
+        
+        .filter-button:hover {
+            background: #f5f6f2;
+        }
+        
+        .filter-button.active {
+            border-color: var(--border);
+            color: var(--text);
+            background: #f5f6f2;
+            font-weight: 700;
+        }
+        
+        .filter-count {
+            margin-left: 5px;
+            color: #92968b;
+        }
+        
+        .table-wrap {
+            overflow-x: auto;
+        }
+        
+        .inquiries-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+        
+        .inquiries-table th {
+            padding: 12px 18px;
+            color: #85897f;
+            background: #fbfcf9;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+        
+        .inquiries-table td {
+            padding: 15px 18px;
+            border-top: 1px solid #eff0eb;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+        
+        .inquiries-table tbody tr:hover {
+            background: #fafbf8;
+        }
+        
+        .person-cell {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .person-avatar {
+            display: grid;
+            flex: 0 0 34px;
+            width: 34px;
+            height: 34px;
+            place-items: center;
+            border-radius: 50%;
+            color: #3b4530;
+            background: #edf3df;
+            font-size: 11px;
+            font-weight: 750;
+        }
+        
+        .person-name {
+            display: block;
+            font-weight: 700;
+        }
+        
+        .person-phone {
+            display: block;
+            margin-top: 3px;
+            color: var(--muted);
+            font-size: 11px;
+        }
+        
+        .service-tag {
+            display: inline-block;
+            padding: 5px 8px;
+            border-radius: 5px;
+            color: #62675c;
+            background: #f2f3ef;
+            font-size: 11px;
+        }
+        
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 9px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 650;
+        }
+        
+        .status-badge::before {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+            content: "";
+        }
+        
+        .status-new {
+            color: #326fd1;
+            background: #edf4ff;
+        }
+        
+        .status-booked {
+            color: #258154;
+            background: #eaf7ef;
+        }
+        
+        .status-on-hold {
+            color: #a57113;
+            background: #fff6df;
+        }
+        
+        .status-canceled {
+            color: #c44f4f;
+            background: #fff0f0;
+        }
+        
+        .view-button {
+            padding: 7px 10px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: #383c33;
+            background: #fff;
+            font-size: 11px;
+            font-weight: 650;
+        }
+        
+        .view-button:hover {
+            border-color: #b8c198;
+        }
+        
+        .empty-state {
+            padding: 45px 20px;
+            color: var(--muted);
+            text-align: center;
+            font-size: 13px;
+        }
+        
+        .table-footer {
+            padding: 13px 18px;
+            border-top: 1px solid var(--border);
+            color: var(--muted);
+            font-size: 11px;
+        }
+        
+        .drawer-backdrop {
+            position: fixed;
+            z-index: 10;
+            inset: 0;
+            visibility: hidden;
+            background: rgb(17 19 15 / 40%);
+            opacity: 0;
+            transition: opacity 180ms ease, visibility 180ms ease;
+        }
+        
+        .drawer-backdrop.open {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        .detail-drawer {
+            position: fixed;
+            z-index: 11;
+            top: 0;
+            right: 0;
+            width: min(500px, 100%);
+            height: 100vh;
+            overflow-y: auto;
+            padding: 25px;
+            background: #fff;
+            box-shadow: -15px 0 45px rgb(0 0 0 / 12%);
+            transform: translateX(102%);
+            transition: transform 220ms ease;
+        }
+        
+        .detail-drawer.open {
+            transform: translateX(0);
+        }
+        
+        .drawer-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 15px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .drawer-header h2 {
+            margin: 0;
+            font-size: 21px;
+            letter-spacing: -0.04em;
+        }
+        
+        .drawer-header p {
+            margin: 6px 0 0;
+            color: var(--muted);
+            font-size: 12px;
+        }
+        
+        .close-button {
+            display: grid;
+            width: 34px;
+            height: 34px;
+            place-items: center;
+            border: 1px solid var(--border);
+            border-radius: 7px;
+            color: var(--text);
+            background: #fff;
+            font-size: 19px;
+        }
+        
+        .drawer-person {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 22px 0;
+        }
+        
+        .drawer-person .person-avatar {
+            width: 44px;
+            height: 44px;
+            flex-basis: 44px;
+            font-size: 14px;
+        }
+        
+        .drawer-person strong {
+            display: block;
+            font-size: 15px;
+        }
+        
+        .drawer-person a {
+            display: inline-block;
+            margin-top: 4px;
+            color: #6a754d;
+            font-size: 12px;
+            text-decoration: none;
+        }
+        
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 17px 12px;
+            padding: 18px 0;
+            border-top: 1px solid var(--border);
+        }
+        
+        .detail-field small {
+            display: block;
+            margin-bottom: 6px;
+            color: var(--muted);
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+        
+        .detail-field span {
+            color: #33372e;
+            font-size: 13px;
+            line-height: 1.5;
+            overflow-wrap: anywhere;
+        }
+        
+        .message-block {
+            padding: 17px;
+            border-radius: 9px;
+            background: #f6f7f3;
+        }
+        
+        .message-block h3 {
+            margin: 0 0 9px;
+            font-size: 12px;
+        }
+        
+        .message-block p {
+            margin: 0;
+            color: #5f645a;
+            font-size: 13px;
+            line-height: 1.7;
+            white-space: pre-wrap;
+        }
+        
+        .drawer-status {
+            display: block;
+            margin: 20px 0 7px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+        
+        .status-select {
+            width: 100%;
+            min-height: 42px;
+            padding: 0 11px;
+            border: 1px solid var(--border);
+            border-radius: 7px;
+            background: #fff;
+        }
+        
+        .drawer-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 9px;
+            margin-top: 17px;
+        }
+        
+        .drawer-actions a,
+        .drawer-actions button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 39px;
+            padding: 0 12px;
+            border: 1px solid var(--border);
+            border-radius: 7px;
+            color: var(--text);
+            background: #fff;
+            font-size: 12px;
+            text-decoration: none;
+        }
+        
+        .drawer-actions a:hover,
+        .drawer-actions button:hover {
+            background: #f6f7f3;
+        }
+        
+        .toast {
+            position: fixed;
+            left: 50%;
+            bottom: 24px;
+            transform: translateX(-50%) translateY(20px);
+            z-index: 30;
+            padding: 11px 16px;
+            border-radius: 999px;
+            color: #f4f4ec;
+            background: var(--dark);
+            font-size: 13px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 200ms ease, transform 200ms ease;
+        }
+        
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        
+        @media (max-width: 1050px) {
+            .stats-grid {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+        }
+        
+        @media (max-width: 760px) {
+            .admin-layout {
+                grid-template-columns: 1fr;
+            }
+            .admin-sidebar {
+                flex-direction: row;
+                align-items: center;
+                gap: 8px;
+                padding: 10px 14px;
+                overflow-x: auto;
+                scrollbar-width: none;
+            }
+            .admin-sidebar::-webkit-scrollbar {
+                display: none;
+            }
+            .admin-brand {
+                padding: 0 6px 0 0;
+                font-size: 17px;
+                white-space: nowrap;
+            }
+            .sidebar-label,
+            .sidebar-bottom {
+                display: none;
+            }
+            .sidebar-link {
+                flex: 0 0 auto;
+                padding: 9px 12px;
+                white-space: nowrap;
+            }
+            .sidebar-link .nav-icon {
+                width: auto;
+            }
+            .topbar {
+                min-height: 62px;
+                padding: 12px 16px;
+            }
+            .page-content {
+                padding: 24px 16px 40px;
+            }
+            .page-heading {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 14px;
+            }
+            .panel-heading {
+                align-items: flex-start;
+                flex-direction: column;
+                padding: 16px;
+                gap: 12px;
+            }
+            .search-box {
+                width: 100%;
+            }
+            .filter-row {
+                padding: 10px 14px;
+            }
+            .inquiries-table th {
+                padding: 10px 12px;
+            }
+            .inquiries-table td {
+                padding: 12px;
+            }
+            .stats-grid-panel {
+                padding: 14px;
+            }
+            #content form,
+            #pricing form {
+                padding: 16px 16px 4px;
+            }
+            .content-actions {
+                flex-wrap: wrap;
+                gap: 8px;
+                justify-content: stretch;
+            }
+            .content-actions .button-dark,
+            .content-actions .button-outline {
+                flex: 1 1 auto;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+            .stat-card {
+                padding: 14px;
+            }
+            .stat-number {
+                font-size: 25px;
+            }
+            .profile>span {
+                display: none;
+            }
+            .detail-drawer {
+                padding: 20px 16px;
+            }
+            .detail-grid {
+                grid-template-columns: 1fr;
+            }
+            .admin-brand {
+                font-size: 15px;
+            }
+            .sidebar-link span:last-child {
+                display: none;
+            }
+            .sidebar-link {
+                padding: 9px 10px;
+            }
+            .table-footer {
+                padding: 11px 14px;
+            }
+            .panel-buttons {
+                width: 100%;
+            }
+            .panel-buttons .button-dark,
+            .panel-buttons .button-outline {
+                flex: 1 1 auto;
+                justify-content: center;
+            }
+        }
+        /* ---- Editable site numbers panel ---- */
+        #content form {
+            padding: 20px 21px 4px;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 18px;
+        }
+
+        .content-group {
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px;
+            background: var(--bg, #fafaf7);
+        }
+
+        .content-group h3 {
+            margin: 0;
+            font-size: 13px;
+            letter-spacing: -0.02em;
+        }
+
+        .content-group > p {
+            margin: 4px 0 12px;
+            color: var(--muted);
+            font-size: 11.5px;
+            line-height: 1.5;
+        }
+
+        .content-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .content-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .content-cell {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            min-width: 0;
+        }
+
+        .content-cell span {
+            color: var(--muted);
+            font-size: 10.5px;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        .content-cell input {
+            width: 100%;
+            min-height: 36px;
+            padding: 0 10px;
+            border: 1px solid var(--border);
+            border-radius: 7px;
+            background: #fff;
+            font-size: 13px;
+            font-family: inherit;
+            outline: none;
+        }
+
+        .content-cell input:focus {
+            border-color: #9ebc61;
+        }
+
+        .content-cell.full {
+            grid-column: 1 / -1;
+        }
+
+        .content-actions {
+            display: flex;
+            justify-content: flex-end;
+            padding: 16px 0 18px;
+        }
+
+        .admin-brand.admin-brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+        }
+
+        .admin-brand.admin-brand-logo img {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid #30332d;
+        }
+
+        /* ---- Pricing cards panel ---- */
+        #pricing form {
+            padding: 20px 21px 4px;
+        }
+
+        .panel-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .button-outline {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            min-height: 42px;
+            padding: 0 15px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: #fff;
+            color: var(--text);
+            font-size: 13px;
+            font-weight: 650;
+            font-family: inherit;
+            cursor: pointer;
+            transition: border-color 160ms ease, background 160ms ease;
+        }
+
+        .button-outline:hover {
+            border-color: #9ebc61;
+            background: #f7fbe9;
+        }
+
+        .content-group-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 4px;
+        }
+
+        .remove-card {
+            border: 0;
+            background: transparent;
+            color: #b4453a;
+            font-size: 11.5px;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            padding: 4px 6px;
+            border-radius: 6px;
+        }
+
+        .remove-card:hover {
+            background: #fdeceb;
+        }
+
+        .content-cell textarea {
+            width: 100%;
+            min-height: 74px;
+            padding: 9px 10px;
+            border: 1px solid var(--border);
+            border-radius: 7px;
+            background: #fff;
+            font-size: 13px;
+            font-family: inherit;
+            outline: none;
+            resize: vertical;
+        }
+
+        .content-cell textarea:focus {
+            border-color: #9ebc61;
+        }
+
+        .button-outline-sm {
+            min-height: 34px;
+            padding: 0 11px;
+            font-size: 12px;
+        }
+
+        .button-block {
+            width: 100%;
+            justify-content: center;
+        }
+
+        /* ---- Login gate ---- */
+        body.locked {
+            overflow: hidden;
+        }
+
+        body.locked .admin-layout,
+        body.locked .detail-drawer,
+        body.locked .drawer-backdrop,
+        body.locked .toast {
+            display: none;
+        }
+
+        .login-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background:
+                radial-gradient(60vw 60vw at 10% 0%, rgba(198, 243, 107, 0.12), transparent 60%),
+                #151713;
+        }
+
+        body.locked .login-screen {
+            display: flex;
+        }
+
+        .login-card {
+            width: min(400px, 100%);
+            padding: 30px 28px 28px;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            background: var(--surface);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.35);
+        }
+
+        .login-card.shake {
+            animation: login-shake 320ms ease;
+        }
+
+        @keyframes login-shake {
+            25% { transform: translateX(-6px); }
+            50% { transform: translateX(6px); }
+            75% { transform: translateX(-3px); }
+        }
+
+        .login-brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 17px;
+            font-weight: 800;
+            letter-spacing: -0.05em;
+        }
+
+        .login-brand img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .login-brand span {
+            color: #7ea532;
+        }
+
+        .login-card h1 {
+            margin: 12px 0 4px;
+            font-size: 22px;
+            letter-spacing: -0.03em;
+        }
+
+        .login-card > p {
+            margin: 0 0 16px;
+            color: var(--muted);
+            font-size: 12.5px;
+            line-height: 1.6;
+        }
+
+        .login-error {
+            border: 1px solid #f0c9c5;
+            border-radius: 8px;
+            background: #fdeceb;
+            color: #b4453a;
+            font-size: 12.5px;
+            font-weight: 600;
+            padding: 9px 12px;
+        }
+
+        .login-field {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-bottom: 12px;
+        }
+
+        .login-field span {
+            color: var(--muted);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        .login-field input {
+            width: 100%;
+            min-height: 42px;
+            padding: 0 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: #fff;
+            color: var(--text);
+            font-size: 14px;
+            font-family: inherit;
+            outline: none;
+        }
+
+        .login-field input:focus {
+            border-color: #9ebc61;
+            box-shadow: 0 0 0 3px rgba(158, 188, 97, 0.18);
+        }
+
+        /* Stats inside the purchases panel */
+        .stats-grid-panel {
+            margin: 0;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .stats-grid-panel .stat-card {
+            padding: 14px 16px;
+        }
+
+        @media (max-width: 640px) {
+            .content-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ---- Marketing tracking panel ---- */
+        #tracking form {
+            padding: 20px 21px 4px;
+        }
+
+        #tracking .content-group h3 {
+            margin: 6px 0 2px;
+        }
+
+        #tracking .hint {
+            margin: 0 0 8px;
+            color: var(--muted);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        #tracking input[type="checkbox"] {
+            width: auto;
+            min-height: 18px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="admin-layout">
+        <aside class="admin-sidebar">
+            <a class="admin-brand admin-brand-logo" href="./index.html"><img src="./me-logo.webp" alt="" width="28" height="28" />Chuppy&nbsp;Devs<span>®</span></a>
+            <div class="sidebar-label">Workspace</div>
+            <a class="sidebar-link active" href="#enquiries" title="Enquiries"><i class="nav-icon fa-solid fa-inbox" aria-hidden="true"></i><span>Enquiries</span></a>
+            <a class="sidebar-link" href="#enquiries" title="Follow-ups"><i class="nav-icon fa-solid fa-clock-rotate-left" aria-hidden="true"></i><span>Follow-ups</span></a>
+            <a class="sidebar-link" href="#purchases" title="Purchases"><i class="nav-icon fa-solid fa-cart-shopping" aria-hidden="true"></i><span>Purchases</span></a>
+            <a class="sidebar-link" href="#content" title="Site numbers"><i class="nav-icon fa-solid fa-hashtag" aria-hidden="true"></i><span>Site numbers</span></a>
+            <a class="sidebar-link" href="#pricing" title="Pricing cards"><i class="nav-icon fa-solid fa-tags" aria-hidden="true"></i><span>Pricing cards</span></a>
+            <a class="sidebar-link" href="#works" title="Works"><i class="nav-icon fa-solid fa-briefcase" aria-hidden="true"></i><span>Works</span></a>
+            <a class="sidebar-link" href="#tracking" title="Marketing tracking"><i class="nav-icon fa-solid fa-bullseye" aria-hidden="true"></i><span>Tracking</span></a>
+            <div class="sidebar-bottom">Portfolio Admin<br />Manage your project enquiries</div>
+        </aside>
+        <main class="admin-main" id="enquiries">
+            <header class="topbar">
+                <div><small>Workspace / Enquiries</small><strong>Enquiry management</strong><br /><span class="cloud-badge" id="cloud-badge">Local mode</span></div>
+                <div class="profile">
+                    <div class="profile-avatar">CD</div><span>Admin</span>
+                    <button class="button-outline button-outline-sm" id="logout-button" type="button"><i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i> Log out</button>
+                </div>
+            </header>
+            <section class="page-content">
+                <div class="page-heading">
+                    <div>
+                        <h1>Enquiries</h1>
+                        <p>Review incoming leads and keep your projects moving.</p>
+                    </div>
+                    <button class="button-dark" id="export-button" type="button"><i class="fa-solid fa-download" aria-hidden="true"></i> Export CSV</button>
+                </div>
+                <div class="stats-grid" id="stats-grid"></div>
+                <section class="inquiries-panel" aria-label="All enquiries">
+                    <div class="panel-heading">
+                        <div>
+                            <h2>All enquiries</h2>
+                            <p>View contact details, project needs, and enquiry status.</p>
+                        </div>
+                        <input class="search-box" id="search-input" type="search" placeholder="Search name, phone, or service..." aria-label="Search enquiries" />
+                    </div>
+                    <div class="filter-row" id="filter-row" aria-label="Filter enquiries"></div>
+                    <div class="table-wrap">
+                        <table class="inquiries-table">
+                            <thead>
+                                <tr>
+                                    <th>Contact</th>
+                                    <th>Service</th>
+                                    <th>Received</th>
+                                    <th>Status</th>
+                                    <th>Details</th>
+                                </tr>
+                            </thead>
+                            <tbody id="inquiries-body"></tbody>
+                        </table>
+                        <div class="empty-state" id="empty-state" hidden>No enquiries match your search.</div>
+                    </div>
+                    <div class="table-footer" id="table-footer"></div>
+                </section>
+
+                <section class="inquiries-panel" aria-label="All purchases" id="purchases">
+                    <div class="panel-heading">
+                        <div>
+                            <h2>Purchases</h2>
+                            <p>Track checkout submissions from your pricing pages.</p>
+                        </div>
+                        <input class="search-box" id="purchases-search" type="search" placeholder="Search order…" aria-label="Search purchases" />
+                    </div>
+                    <div class="stats-grid stats-grid-panel" id="purchases-stats"></div>
+                    <div class="filter-row" id="purchases-filter-row" aria-label="Filter purchases"></div>
+                    <div class="table-wrap">
+                        <table class="inquiries-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Service type</th>
+                                    <th>Amount</th>
+                                    <th>Received</th>
+                                    <th>Status</th>
+                                    <th>Details</th>
+                                </tr>
+                            </thead>
+                            <tbody id="purchases-body"></tbody>
+                        </table>
+                        <div class="empty-state" id="purchases-empty-state" hidden>No purchases yet. Checkouts from the site will appear here.</div>
+                    </div>
+                    <div class="table-footer" id="purchases-table-footer"></div>
+                </section>
+
+                <section class="inquiries-panel" aria-label="Editable site numbers" id="content">
+                    <div class="panel-heading">
+                        <div>
+                            <h2>Site numbers</h2>
+                            <p>Edit the numbers shown on the homepage — hero meta, about facts and about proof.</p>
+                        </div>
+                        <button class="button-dark" id="reset-content" type="button">Reset defaults</button>
+                    </div>
+                    <form id="content-form">
+                        <div class="content-grid" id="content-grid"></div>
+                        <div class="content-actions">
+                            <button class="button-dark" type="submit">Save numbers</button>
+                        </div>
+                    </form>
+                </section>
+
+                <section class="inquiries-panel" aria-label="Editable pricing cards" id="pricing">
+                    <div class="panel-heading panel-actions">
+                        <div>
+                            <h2>Pricing cards</h2>
+                            <p>Edit the number, name and price of each plan on the checkout page.</p>
+                        </div>
+                        <div class="panel-buttons">
+                            <button class="button-outline" id="add-pricing" type="button"><i class="fa-solid fa-plus" aria-hidden="true"></i> Add card</button>
+                            <button class="button-dark" id="reset-pricing" type="button">Reset defaults</button>
+                        </div>
+                    </div>
+                    <form id="pricing-form">
+                        <div class="content-grid" id="pricing-grid"></div>
+                        <div class="content-actions">
+                            <button class="button-dark" type="submit">Save pricing</button>
+                        </div>
+                    </form>
+                </section>
+
+                <section class="inquiries-panel" aria-label="Editable works cards" id="works">
+                    <div class="panel-heading panel-actions">
+                        <div>
+                            <h2>Works</h2>
+                            <p>Add or remove cards shown in the Works section of the main page. Images should live in <code>public/works/</code>.</p>
+                        </div>
+                        <div class="panel-buttons">
+                            <button class="button-outline" id="add-work" type="button"><i class="fa-solid fa-plus" aria-hidden="true"></i> Add card</button>
+                            <button class="button-dark" id="reset-works" type="button">Reset defaults</button>
+                        </div>
+                    </div>
+                    <form id="works-form">
+                        <div class="content-grid" id="works-grid"></div>
+                        <div class="content-actions">
+                            <button class="button-dark" type="submit">Save works</button>
+                        </div>
+                    </form>
+                </section>
+
+                <section class="inquiries-panel" aria-label="Marketing tracking" id="tracking">
+                    <div class="panel-heading panel-actions">
+                        <div>
+                            <h2>Marketing tracking</h2>
+                            <p>Configure Meta Pixel, Google Tag Manager and GA4. Each ID must be a valid, uppercase format; anything else is ignored.</p>
+                        </div>
+                        <div class="panel-buttons">
+                            <button class="button-outline" id="save-tracking" type="button"><i class="fa-solid fa-save" aria-hidden="true"></i> Save tracking</button>
+                        </div>
+                    </div>
+                    <form id="tracking-form">
+                        <div class="content-grid">
+                            <div class="content-group">
+                                <h3><i class="fa-solid fa-bullseye" aria-hidden="true"></i> Meta Pixel</h3>
+                                <p class="hint">5+ digit numeric pixel ID (e.g. 1234567890).</p>
+                                <label class="content-cell"><span>Pixel ID</span>
+                                    <input type="text" id="tracking-meta-pixel" name="metaPixelId" placeholder="1234567890" autocomplete="off" /></label>
+                            </div>
+                            <div class="content-group">
+                                <h3><i class="fa-solid fa-globe" aria-hidden="true"></i> Google Tag Manager</h3>
+                                <p class="hint">Container ID starting with GTM- (e.g. GTM-ABCD1234).</p>
+                                <label class="content-cell"><span>Container ID</span>
+                                    <input type="text" id="tracking-gtm" name="gtmId" placeholder="GTM-ABCD1234" autocomplete="off" /></label>
+                            </div>
+                            <div class="content-group">
+                                <h3><i class="fa-solid fa-chart-simple" aria-hidden="true"></i> GA4</h3>
+                                <p class="hint">Measurement ID starting with G- (e.g. G-XXXXXXXXXX).</p>
+                                <label class="content-cell"><span>Measurement ID</span>
+                                    <input type="text" id="tracking-ga4" name="ga4Id" placeholder="G-XXXXXXXXXX" autocomplete="off" /></label>
+                            </div>
+                            <div class="content-group">
+                                <h3><i class="fa-solid fa-toggle-on" aria-hidden="true"></i> Status</h3>
+                                <label class="content-cell"><span>Enabled</span>
+                                    <input type="checkbox" id="tracking-enabled" name="enabled" checked /></label>
+                            </div>
+                        </div>
+                        <div class="content-actions">
+                            <button class="button-dark" type="submit">Save tracking settings</button>
+                        </div>
+                    </form>
+                </section>
+            </section>
+        </main>
+    </div>
+    <div class="drawer-backdrop" id="drawer-backdrop"></div>
+    <aside class="detail-drawer" id="detail-drawer" role="dialog" aria-modal="true" aria-labelledby="drawer-title" aria-hidden="true">
+        <div class="drawer-header">
+            <div>
+                <h2 id="drawer-title">Enquiry details</h2>
+                <p id="drawer-date"></p>
+            </div>
+            <button class="close-button" id="close-drawer" type="button" aria-label="Close details"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+        </div>
+        <div id="drawer-content"></div>
+    </aside>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <div class="login-screen" id="login-screen" role="dialog" aria-modal="true" aria-labelledby="login-title">
+        <form class="login-card" id="login-form" autocomplete="off">
+            <div class="login-brand"><img src="./me-logo.webp" alt="" width="32" height="32" />Chuppy Devs<span>®</span></div>
+            <h1 id="login-title">Admin access</h1>
+            <p>Sign in to manage enquiries, purchases, site numbers, pricing and works.</p>
+            <p class="login-error" id="login-error" hidden></p>
+            <label class="login-field" for="login-username"><span>Username</span>
+                <input id="login-username" name="username" type="text" placeholder="Username" autocomplete="username" required /></label>
+            <label class="login-field" for="login-password"><span>Password</span>
+                <input id="login-password" name="password" type="password" placeholder="••••••••" autocomplete="current-password" required /></label>
+            <button class="button-dark button-block" type="submit"><i class="fa-solid fa-lock" aria-hidden="true"></i> Log in</button>
+        </form>
+    </div>
+
+    <script type="module" src="/src/auth.js"></script>
+    <script type="module" src="/src/admin.js"></script>
+</body>
+
+</html>

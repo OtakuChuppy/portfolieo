@@ -1,0 +1,27 @@
+{
+  "name": "portfolieo",
+  "version": 2,
+  "builds": [
+    {
+      "src": "index.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "admin.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "checkout.html",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    { "src": "/(.*)", "dest": "index.html" },
+    { "src": "/admin", "dest": "admin.html" },
+    { "src": "/checkout", "dest": "checkout.html" }
+  ],
+  "env": {
+    "VITE_SUPABASE_URL": "@supabase_url",
+    "VITE_SUPABASE_ANON_KEY": "@supabase_anon_key"
+  }
+}
