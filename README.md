@@ -44,7 +44,16 @@ npm install
 npm run dev
 ```
 
-## Admin Panel
+
+## Stripe (Publishable Key)
+
+> **SECURITY:** Publishable keys can safely live in frontend code. Do not commit `.env` to git.
+
+Get your publishable key from your Stripe dashboard (Developers → API keys). Current keys:
+- `VITE_STRIPE_PUBLISHABLE_KEY` = `sb_publishable_6gk7AGDZYS7NkHIX8nwoyQ_zYXJ9H1Y`
+- `VITE_STRIPE_PUBLISHABLE_KEY_2` = `sb_publishable_QiFiwgevChbNjCsez0B8lA_Mnq3KmD3`
+
+Add to Vercel environment variables if using Stripe on the live site.
 
 Open `admin.html` in your browser. Login is handled via Firebase Anonymous Auth (or Supabase auth in production).
 
