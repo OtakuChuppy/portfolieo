@@ -1,27 +1,28 @@
 {
-  "name": "portfolieo",
-  "version": 2,
-  "builds": [
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "cleanUrls": true,
+  "headers": [
     {
-      "src": "index.html",
-      "use": "@vercel/static"
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "X-XSS-Protection", "value": "1; mode=block" }
+      ]
     },
     {
-      "src": "admin.html",
-      "use": "@vercel/static"
+      "source": "/assets/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
     },
     {
-      "src": "checkout.html",
-      "use": "@vercel/static"
+      "source": "/(.*).html",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+      ]
     }
-  ],
-  "routes": [
-    { "src": "/(.*)", "dest": "index.html" },
-    { "src": "/admin", "dest": "admin.html" },
-    { "src": "/checkout", "dest": "checkout.html" }
-  ],
-  "env": {
-    "VITE_SUPABASE_URL": "https://wgktassmrrereaciixdqvm.supabase.co",
-    "VITE_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indna3Rhc3NtcnJlYWNpaXhkcXZtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEzOTI5NDMsImV4cCI6MjEwNjk2ODk0M30.1cRx9AkqiSXFv9P_IwGJUhqnqkQGUNXkmGMmwG9vFIY"
-  }
+  ]
 }

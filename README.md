@@ -23,19 +23,46 @@ A fast, polished portfolio website with Meta Ads strategy, built with vanilla ES
 
 ## Deployment
 
-### Option 1: Vercel (Recommended)
+This project can be deployed to GitHub, Firebase, and Vercel.
 
-1. Push this repo to GitHub
-2. Import to Vercel
-3. Add environment variables:
-   - `VITE_SUPABASE_URL` — your Supabase project URL
-   - `VITE_SUPABASE_ANON_KEY` — your Supabase anon key
-4. Deploy
+### Option A: Vercel (Recommended)
 
-### Option 2: Static Hosting
+The project is already linked to Vercel (`.vercel/project.json`).
+
+1. Push this repo to GitHub (`origin` → `https://github.com/OtakuChuppy/portfolieo.git`)
+2. Set build-time env vars (`vercel env add <name> production`):
+   - `VITE_SUPABASE_URL` — Supabase project URL
+   - `VITE_SUPABASE_ANON_KEY` — Supabase anon key
+   - `VITE_STRIPE_PUBLISHABLE_KEY` / `VITE_STRIPE_PUBLISHABLE_KEY_2` — Stripe publishable keys
+3. Deploy:
+
+```bash
+vercel --prod
+```
+
+`vercel.json` runs `npm run build` and serves `dist/` with clean URLs (`/admin`, `/checkout`).
+
+### Option B: Firebase Hosting
+
+1. Log in and deploy:
+
+```bash
+firebase login
+firebase deploy --only hosting
+```
+
+`firebase.json` serves `dist/`, rewrites unknown routes to `index.html` (SPA), and sets security + cache headers. Run `npm run build` first, or use `./deploy.sh --firebase`.
+
+### Option C: GitHub Pages (CI/CD)
+
+1. Push to `main` — `.github/workflows/deploy.yml` builds and deploys automatically
+2. In the repo: **Settings → Pages → Source: GitHub Actions**
+3. Optional: add `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` as repository secrets so the Pages build includes Supabase config
+
+### Any Static Host
 
 1. Run `npm run build`
-2. Deploy `dist/` to any static host (Netlify, GitHub Pages, Cloudflare Pages, etc.)
+2. Upload `dist/` to any static host (Netlify, Cloudflare Pages, etc.)
 
 ## Local Development
 
