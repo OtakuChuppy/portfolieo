@@ -36,7 +36,8 @@ jobs:
         run: npm ci
 
       - name: Build
-        run: npm run build
+        # /portfolieo/ base so assets resolve under the GitHub Pages project subpath
+        run: npm run build -- --base=/portfolieo/
         env:
           # Client-safe values exposed to the Pages build (see repo Actions variables)
           VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
