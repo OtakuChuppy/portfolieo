@@ -1,0 +1,25 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Portfolio backend collections.
+    //
+    // NOTE: the admin panel is gated client-side only (see src/auth.js), so
+    // these rules allow public read/write — the exact same security level as
+    // the previous Supabase anon-key setup, which shipped its key in the
+    // browser bundle. Anyone can submit enquiries/purchases; anyone with the
+    // config can read them. Lock this down if you ever add real auth.
+    match /enquiries/{id} {
+      allow read, write: if true;
+    }
+    match /purchases/{id} {
+      allow read, write: if true;
+    }
+    match /siteContent/{id} {
+      allow read, write: if true;
+    }
+    // Everything else stays closed.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

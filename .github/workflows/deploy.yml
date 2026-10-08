@@ -40,8 +40,6 @@ jobs:
         run: npm run build -- --base=/portfolieo/
         env:
           # Client-safe values exposed to the Pages build (see repo Actions variables)
-          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
-          VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
           VITE_STRIPE_PUBLISHABLE_KEY: ${{ vars.VITE_STRIPE_PUBLISHABLE_KEY }}
           VITE_STRIPE_PUBLISHABLE_KEY_2: ${{ vars.VITE_STRIPE_PUBLISHABLE_KEY_2 }}
 

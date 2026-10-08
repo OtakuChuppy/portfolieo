@@ -8,7 +8,7 @@ A fast, polished portfolio website with Meta Ads strategy, built with vanilla ES
 - **Vite** — fast production builds
 - **Three.js** — 3D particle globe in the hero section
 - **Motion** — spring animations
-- **Supabase** — database (enquiries, purchases, admin content)
+- **Firebase / Cloud Firestore** — database (enquiries, purchases, admin content)
 - **LocalStorage** — client-side fallback (zero-config local development)
 
 ## Features
@@ -30,9 +30,9 @@ This project can be deployed to GitHub, Firebase, and Vercel.
 The project is already linked to Vercel (`.vercel/project.json`).
 
 1. Push this repo to GitHub (`origin` → `https://github.com/OtakuChuppy/portfolieo.git`)
-2. Set build-time env vars (`vercel env add <name> production`):
-   - `VITE_SUPABASE_URL` — Supabase project URL
-   - `VITE_SUPABASE_ANON_KEY` — Supabase anon key
+2. (Optional) Add env vars (`vercel env add <name> production`) — the Firebase
+   backend needs **no** env vars (its web config is public and baked into the
+   bundle from `src/firebase.js`); only Stripe keys are optional:
    - `VITE_STRIPE_PUBLISHABLE_KEY` / `VITE_STRIPE_PUBLISHABLE_KEY_2` — Stripe publishable keys
 3. Deploy:
 
@@ -63,7 +63,7 @@ The repo is linked to Firebase project `chuppi-protfolieo-firebase` via `.fireba
 
 1. Push to `main` — `.github/workflows/deploy.yml` builds and deploys automatically
 2. In the repo: **Settings → Pages → Source: GitHub Actions** (enabled)
-3. The build receives all four `VITE_*` values from **Settings → Actions → Variables** and builds with `--base=/portfolieo/` so assets resolve under the project subpath
+3. The build reads any optional `VITE_*` Stripe variables from **Settings → Actions → Variables** and builds with `--base=/portfolieo/` so assets resolve under the project subpath (the Firebase backend needs no env vars)
 
 **Live:** https://otakuchuppy.github.io/portfolieo/
 
@@ -90,19 +90,27 @@ Get your publishable key from your Stripe dashboard (Developers → API keys). C
 
 Add to Vercel environment variables if using Stripe on the live site.
 
-Open `admin.html` in your browser. Login is handled via Firebase Anonymous Auth (or Supabase auth in production).
+Open `admin.html` in your browser. Login is a lightweight client-side gate (username/password hash from `src/auth.js`) — it hides the panel from casual visitors but is not real security.
 
 ## Database Schema
 
-The project uses Supabase with the following tables:
+The project uses **Cloud Firestore** (Firebase project `chuppi-protfolieo-firebase`, database region `asia-south1`) with these collections:
 
 - `enquiries` — contact form submissions
 - `purchases` — checkout orders
-- `content` — admin-editable content (works, pricing, skills, stats)
+- `siteContent/numbers` — admin-editable site content (site numbers, pricing, works cards)
+
+Rules live in `firestore.rules` and deploy with:
+
+```bash
+firebase deploy --only firestore:rules
+```
+
+> The admin panel is gated client-side only, so the rules allow public read/write on those three paths — the same security level as the old Supabase anon-key setup. Lock them down if you add real auth.
 
 ### Default Admin Account
 
-Create a new admin user via Supabase Auth with email/password. No default credentials are pre-seeded.
+The admin panel uses the local credential gate in `src/auth.js` (SHA-256 hash, no cloud user accounts).
 
 ## License
 

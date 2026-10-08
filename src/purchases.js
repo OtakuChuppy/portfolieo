@@ -1,12 +1,11 @@
-// Supabase checkout/purchase backend (with localStorage fallback).
-// Zero server code. Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY
-// in Vercel env vars (see README.md) or leave unset to use localStorage.
+// Firebase/Firestore purchase backend (with localStorage fallback).
+// Zero server code — the Firebase config lives in src/firebase.js and is
+// baked into the bundle at build time, so every deploy target (Vercel,
+// GitHub Pages, Firebase Hosting) works without extra environment setup.
 //
-// Setup:
-//  1. Create project at https://supabase.com
-//  2. Run the SQL schema in Supabase Dashboard > SQL editor
-//  3. Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to Vercel env
-//  4. Rebuild. Without keys the site keeps working on localStorage.
+// Setup: Firestore is created + rules deployed via `firebase deploy`
+// (see firestore.rules). Without Firebase the site keeps working on
+// localStorage.
 
 import {
   savePurchase as _savePurchase,
@@ -14,14 +13,14 @@ import {
   subscribePurchases as _subscribePurchases,
   updatePurchaseStatus as _updatePurchaseStatus,
   deletePurchase as _deletePurchase,
-  isSupabaseConfigured,
+  isFirebaseConfigured,
   PURCHASES_TABLE,
-} from "./supabase.js"
+} from "./firebase.js"
 
 export const PURCHASES_KEY = "portfolio-admin-purchases-v1"
 export const PURCHASES_COLLECTION = PURCHASES_TABLE
 
-export const isCloudConfigured = isSupabaseConfigured
+export const isCloudConfigured = isFirebaseConfigured
 
 let db = null
 
