@@ -10,9 +10,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.117.3",
     "firebase": "^12.19.0",
     "motion": "^14.0.0",
     "three": "^0.186.1",
     "vite": "^8.3.2"
+  },
+  "devDependencies": {
+    "puppeteer-core": "^25.13.0"
   }
 }

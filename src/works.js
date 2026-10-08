@@ -9,16 +9,6 @@ import { getSiteContent } from "./siteContent.js"
 
 const items = getSiteContent().worksCards
 
-// Keep the overlay in sync if the admin saves changes in another tab.
-document.addEventListener("site-content-updated", (event) => {
-    const next = Array.isArray(event.detail?.worksCards) ? event.detail.worksCards : []
-    if (!next.length || openId) return
-    if (JSON.stringify(next.map((card) => card.id)) === JSON.stringify(items.map((card) => card.id))) return
-    items.length = 0
-    items.push(...next)
-    renderList()
-})
-
 const cardTransition = {
   type: spring,
   visualDuration: 0.3,
@@ -120,6 +110,19 @@ function initSkeletons() {
 }
 
 initSkeletons()
+
+// Keep the overlay in sync if the admin saves changes in another tab.
+// (Declared here — inside the gallery scope — so `openId`/`renderList`
+// are actually in scope; the old module-level copy threw a ReferenceError.)
+document.addEventListener("site-content-updated", (event) => {
+  const next = Array.isArray(event.detail?.worksCards) ? event.detail.worksCards : []
+  if (!next.length || openId) return
+  if (JSON.stringify(next.map((card) => card.id)) === JSON.stringify(items.map((card) => card.id))) return
+  items.length = 0
+  items.push(...next)
+  renderList()
+  initSkeletons()
+})
 
 function open(id) {
   if (!list || !slot) return

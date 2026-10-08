@@ -42,7 +42,7 @@ vercel --prod
 
 `vercel.json` runs `npm run build` and serves `dist/` with clean URLs (`/admin`, `/checkout`).
 
-**Live:** https://portfolieo-ten.vercel.app
+**Live:** https://md-r-h-chuppy.vercel.app
 
 ### Option B: Firebase Hosting
 

@@ -457,6 +457,12 @@ start().catch((error) => {
   showFallback("Something went wrong loading the 3D effect — showing the portrait instead.")
 })
 
-import { getSiteContent } from "./siteContent.js"
-import { applyTracking } from "./tracking.js"
-applyTracking(getSiteContent().tracking)
+// Content + tracking load lazily: a failure in those modules must never
+// take the hero particle effect (started above) down with it.
+import("./siteContent.js")
+  .then(({ getSiteContent }) =>
+    import("./tracking.js").then(({ applyTracking }) =>
+      applyTracking(getSiteContent().tracking)
+    )
+  )
+  .catch((error) => console.error("Tracking could not be applied:", error))

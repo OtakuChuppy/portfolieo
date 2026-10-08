@@ -1,5 +1,7 @@
 // Supabase backend for enquiries, purchases, and content.
-// Zero server code. Works in Vercel serverless functions or directly in browser.
+// Zero server code. The Supabase client is bundled at build time
+// (no runtime CDN import — an esm.sh outage used to crash this module
+// and take down the whole page, including the hero effect).
 //
 // Setup:
 //  1. Create project at https://supabase.com
@@ -11,6 +13,8 @@
 //  - VITE_SUPABASE_URL
 //  - VITE_SUPABASE_ANON_KEY
 
+import { createClient } from "@supabase/supabase-js"
+
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY
 
@@ -20,10 +24,15 @@ export const isSupabaseConfigured =
 let supabase = null
 
 if (isSupabaseConfigured) {
-  const { createClient } = await import("https://esm.sh/@supabase/ssr@2")
-  supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-    auth: { persistSession: true, autoRefreshToken: true },
-  })
+  try {
+    supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+      auth: { persistSession: true, autoRefreshToken: true },
+    })
+  } catch (error) {
+    // Never let a client init failure break the page — fall back to localStorage.
+    console.error("Supabase client failed to initialise:", error)
+    supabase = null
+  }
 }
 
 // ── Enquiries ────────────────────────────────────────────────
