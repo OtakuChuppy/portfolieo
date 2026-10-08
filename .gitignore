@@ -33,3 +33,6 @@ data/
 *.txt
 supabase_check.txt
 .vercel
+
+# Firebase CLI cache
+.firebase/

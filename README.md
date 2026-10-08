@@ -42,6 +42,8 @@ vercel --prod
 
 `vercel.json` runs `npm run build` and serves `dist/` with clean URLs (`/admin`, `/checkout`).
 
+**Live:** https://portfolieo-ten.vercel.app
+
 ### Option B: Firebase Hosting
 
 1. Log in and deploy:
@@ -53,11 +55,17 @@ firebase deploy --only hosting
 
 `firebase.json` serves `dist/`, rewrites unknown routes to `index.html` (SPA), and sets security + cache headers. Run `npm run build` first, or use `./deploy.sh --firebase`.
 
+The repo is linked to Firebase project `chuppi-protfolieo-firebase` via `.firebaserc`.
+
+**Live:** https://chuppi-protfolieo-firebase.web.app
+
 ### Option C: GitHub Pages (CI/CD)
 
 1. Push to `main` — `.github/workflows/deploy.yml` builds and deploys automatically
-2. In the repo: **Settings → Pages → Source: GitHub Actions**
-3. Optional: add `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` as repository secrets so the Pages build includes Supabase config
+2. In the repo: **Settings → Pages → Source: GitHub Actions** (enabled)
+3. The build receives all four `VITE_*` values from **Settings → Actions → Variables** and builds with `--base=/portfolieo/` so assets resolve under the project subpath
+
+**Live:** https://otakuchuppy.github.io/portfolieo/
 
 ### Any Static Host
 
